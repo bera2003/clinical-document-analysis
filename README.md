@@ -43,8 +43,3 @@ A full-stack web application that uses **NLP (Natural Language Processing)** to 
 - MySQL
 - JWT Authentication
 - NLP (spaCy)
-
----
-
-## 📁 Project Structure
-
