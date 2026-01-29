@@ -123,3 +123,35 @@
     @apply bg-background text-foreground;
   }
 }
+/* Sidebar */
+.sidebar {
+  width: 260px;
+  height: 100vh;
+  background: #0f172a;
+  color: white;
+  padding: 20px;
+  position: fixed;
+}
+
+.logo {
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 22px;
+  color: #38bdf8;
+}
+
+.menu-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  color: white;
+  text-decoration: none;
+}
+
+.menu-item:hover,
+.menu-item.active {
+  background: #1e293b;
+}
+
