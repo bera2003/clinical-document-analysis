@@ -155,3 +155,63 @@
   background: #1e293b;
 }
 
+
+/* ===============================
+   PREMIUM ANIMATED BACKGROUND
+   =============================== */
+
+.animated-bg {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+
+  background: linear-gradient(
+    -45deg,
+    #dbeafe,
+    #e0e7ff,
+    #ede9fe,
+    #cffafe
+  );
+
+  background-size: 400% 400%;
+  animation: gradientMove 16s ease infinite;
+}
+
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glow blobs */
+
+.blob {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 9999px;
+  filter: blur(130px);
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.blob-blue {
+  background: #60a5fa;
+  top: -120px;
+  left: -120px;
+  animation: float 18s ease-in-out infinite;
+}
+
+.blob-purple {
+  background: #a78bfa;
+  bottom: -150px;
+  right: -150px;
+  animation: float 20s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-60px); }
+}
+
+

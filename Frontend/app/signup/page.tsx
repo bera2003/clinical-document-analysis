@@ -4,6 +4,7 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 import { Stethoscope, Mail, Lock, User } from "lucide-react"
+import { motion } from "framer-motion"
 
 export default function SignupPage() {
   const router = useRouter()
@@ -65,10 +66,19 @@ export default function SignupPage() {
       </div>
 
       {/* RIGHT SECTION */}
-      <div className="flex items-center justify-center bg-gray-50">
-        <form
+      <div className="animated-bg flex items-center justify-center">
+
+  {/* glowing blobs */}
+  <div className="blob blob-blue"></div>
+  <div className="blob blob-purple"></div>
+
+        <motion.form
+        initial={{ opacity: 0, y: 50, scale: 0.96 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
           onSubmit={handleSubmit}
-          className="w-full max-w-md bg-white p-10 rounded-2xl shadow-xl"
+          className="w-full max-w-md p-10 rounded-2xl shadow-2xl 
+bg-white/70 backdrop-blur-xl border border-white/20"
         >
           <h3 className="text-3xl font-bold text-gray-900">
             Create your account
@@ -152,7 +162,7 @@ export default function SignupPage() {
               Sign in
             </span>
           </p>
-        </form>
+        </motion.form>
       </div>
     </div>
   )

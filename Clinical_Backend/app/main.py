@@ -8,7 +8,7 @@ from app.models import Base, ClinicalDocument, User
 from app.file_reader import read_file
 from app.nlp import analyze_text
 from app.schemas import UserCreate, UserLogin
-from app.auth import hash_password, verify_password
+from app.auth import hash_password, verify_password, router as auth_router
 from app.jwt_config import create_access_token
 from app.dependencies import get_current_user
 
@@ -16,6 +16,8 @@ from app.dependencies import get_current_user
 # App Initialization
 # ------------------------
 app = FastAPI(title="Clinical Document Analysis Backend")
+
+app.include_router(auth_router)
 
 app.add_middleware(
     CORSMiddleware,
