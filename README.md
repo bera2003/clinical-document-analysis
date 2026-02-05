@@ -43,3 +43,10 @@ A full-stack web application that uses **NLP (Natural Language Processing)** to 
 - MySQL
 - JWT Authentication
 - NLP (spaCy)
+
+### How to run this
+- Frontend: npm run dev
+- Backend: First Activate venv using the command
+- venv\Scripts\activate
+- Then start backend using the following command
+- python -m uvicorn app.main:app --reload
