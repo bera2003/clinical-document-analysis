@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import {
   Card,
@@ -61,12 +62,16 @@ const colorMap: Record<string, string> = {
 /* ---------- MAIN COMPONENT ---------- */
 
 export default function HealthcareNLPDashboard() {
-  const { user, token } = useAuth();
+  const { user, token, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!user) router.push("/login");
-  }, [user]);
+
+  if (loading) return; // ⭐ WAIT FOR AUTH
+
+  if (!user) router.push("/login");
+
+}, [user, loading]);
 
   const [stats, setStats] = useState<ProcessingStats | null>(null);
   const [processingLogs, setProcessingLogs] = useState<ProcessingLog[]>([]);
@@ -76,6 +81,16 @@ export default function HealthcareNLPDashboard() {
   const [quickText, setQuickText] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+
+    if (loading) return;
+
+    if (!user) {
+      router.push("/login");
+    }
+
+  }, [user, loading, router]);
 
   /* ---------- API ---------- */
 
@@ -154,10 +169,26 @@ export default function HealthcareNLPDashboard() {
           }
           onUploadClick={handleUploadDocuments}
         />
+        <ActionCard
+  icon={Brain}
+  title="Entity Extraction"
+  color="green"
+  route="/dashboard/entities"
+/>
 
-        <ActionCard icon={Brain} title="Entity Extraction" color="green" />
-        <ActionCard icon={BarChart3} title="Analytics" color="purple" />
-        <ActionCard icon={Cloud} title="EHR Integration" color="orange" />
+<ActionCard
+  icon={BarChart3}
+  title="Analytics"
+  color="purple"
+  route="/dashboard/analytics"
+/>
+
+<ActionCard
+  icon={Cloud}
+  title="EHR Integration"
+  color="orange"
+  route="/dashboard/ehr"
+/>
       </div>
 
       {/* PROCESSING MONITOR */}
@@ -324,19 +355,24 @@ function UploadCard({
 
 /* ---------- OTHER COMPONENTS ---------- */
 
-function ActionCard({ icon: Icon, title, color }: any) {
+function ActionCard({ icon: Icon, title, color, route }: any) {
   return (
-    <Card>
-      <CardHeader className="text-center">
-        <div className={`mx-auto p-3 rounded-full ${colorMap[color]}`}>
-          <Icon className="h-6 w-6" />
-        </div>
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Button className={`w-full ${colorMap[color]}`}>{title}</Button>
-      </CardContent>
-    </Card>
+    <Link href={route}>
+      <Card className="cursor-pointer hover:shadow-xl transition">
+        <CardHeader className="text-center">
+          <div className={`mx-auto p-3 rounded-full ${colorMap[color]}`}>
+            <Icon className="h-6 w-6" />
+          </div>
+          <CardTitle>{title}</CardTitle>
+        </CardHeader>
+
+        <CardContent>
+          <Button className={`w-full ${colorMap[color]}`}>
+            {title}
+          </Button>
+        </CardContent>
+      </Card>
+    </Link>
   );
 }
 
@@ -352,3 +388,4 @@ function Stat({ icon: Icon, label, value, suffix = "" }: any) {
     </div>
   );
 }
+

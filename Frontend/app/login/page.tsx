@@ -4,7 +4,8 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { useAuth } from "@/context/AuthContext"
 import { Stethoscope, Mail, Lock } from "lucide-react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
+import { signIn } from "next-auth/react";
 
 export default function LoginPage() {
   const router = useRouter()
@@ -59,22 +60,49 @@ export default function LoginPage() {
       </div>
 
       {/* RIGHT LOGIN FORM */}
-      <div className="animated-bg flex items-center justify-center">
+      <div className="animated-bg relative overflow-hidden flex items-center justify-center">
 
-        {/* glowing blobs */}
-        <div className="blob blob-blue"></div>
-        <div className="blob blob-purple"></div>
+        {/* Animated blobs */}
+        <motion.div
+          className="blob blob-blue absolute"
+          animate={{
+            x: [0, 40, -30, 0],
+            y: [0, -40, 30, 0],
+            scale: [1, 1.1, 0.9, 1],
+          }}
+          transition={{
+            duration: 10,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
 
+        <motion.div
+          className="blob blob-purple absolute"
+          animate={{
+            x: [0, -50, 40, 0],
+            y: [0, 30, -40, 0],
+            scale: [1, 0.9, 1.15, 1],
+          }}
+          transition={{
+            duration: 12,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: 1,
+          }}
+        />
+
+        {/* LOGIN CARD */}
         <motion.form
           onSubmit={handleSubmit}
           initial={{ opacity: 0, y: 50, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          transition={{ duration: 0.6 }}
           className="relative z-10 w-full max-w-md p-10 rounded-2xl shadow-2xl 
           bg-white/70 backdrop-blur-xl border border-white/20"
         >
 
-          {/* ⭐ STAGGER WRAPPER */}
+          {/* Stagger Wrapper */}
           <motion.div
             variants={{
               hidden: {},
@@ -110,13 +138,7 @@ export default function LoginPage() {
             </motion.p>
 
             {/* Email */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="relative mb-5"
-            >
+            <motion.div variants={{ hidden:{opacity:0,y:20}, visible:{opacity:1,y:0} }} className="relative mb-5">
               <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
               <input
                 type="email"
@@ -129,13 +151,7 @@ export default function LoginPage() {
             </motion.div>
 
             {/* Password */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="relative mb-6"
-            >
+            <motion.div variants={{ hidden:{opacity:0,y:20}, visible:{opacity:1,y:0} }} className="relative mb-6">
               <Lock className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
               <input
                 type="password"
@@ -148,13 +164,7 @@ export default function LoginPage() {
             </motion.div>
 
             {/* Forgot Password */}
-            <motion.div
-              variants={{
-                hidden: { opacity: 0 },
-                visible: { opacity: 1 },
-              }}
-              className="text-right mb-6"
-            >
+            <motion.div variants={{ hidden:{opacity:0}, visible:{opacity:1} }} className="text-right mb-6">
               <span
                 onClick={() => router.push("/forgot-password")}
                 className="text-sm text-blue-700 cursor-pointer hover:underline"
@@ -163,40 +173,68 @@ export default function LoginPage() {
               </span>
             </motion.div>
 
-            {/* Error */}
-            {error && (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-red-600 text-sm mb-4 font-medium"
-              >
-                {error}
-              </motion.p>
-            )}
+            {/* Error Animation */}
+            <AnimatePresence>
+              {error && (
+                <motion.p
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="text-red-600 text-sm mb-4 font-medium"
+                >
+                  {error}
+                </motion.p>
+              )}
+            </AnimatePresence>
 
-            {/* ⭐ Animated Button */}
+            {/* Login Button */}
             <motion.button
               type="submit"
               disabled={loading}
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
-              variants={{
-                hidden: { opacity: 0, y: 20 },
-                visible: { opacity: 1, y: 0 },
-              }}
+              variants={{ hidden:{opacity:0,y:20}, visible:{opacity:1,y:0} }}
               className="w-full py-3 bg-blue-700 hover:bg-blue-800 text-white font-semibold rounded-lg transition disabled:opacity-60"
             >
               {loading ? "Signing in..." : "Sign in"}
             </motion.button>
 
+            {/* Divider */}
+            <motion.div variants={{ hidden:{opacity:0}, visible:{opacity:1} }}
+              className="flex items-center gap-4 my-6">
+              <div className="flex-1 h-px bg-gray-300"></div>
+              <span className="text-xs text-gray-500 uppercase">or</span>
+              <div className="flex-1 h-px bg-gray-300"></div>
+            </motion.div>
+
+            {/* Social Buttons */}
+            <motion.div variants={{ hidden:{opacity:0,y:20}, visible:{opacity:1,y:0} }}
+              className="grid grid-cols-2 gap-3">
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="button"
+                onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+                className="py-3 border rounded-lg bg-white hover:bg-gray-50 font-semibold transition"
+              >
+                Google
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="button"
+                className="py-3 border rounded-lg bg-white hover:bg-gray-50 font-semibold transition"
+              >
+                SSO
+              </motion.button>
+
+            </motion.div>
+
             {/* Signup */}
-            <motion.p
-              variants={{
-                hidden: { opacity: 0 },
-                visible: { opacity: 1 },
-              }}
-              className="text-sm text-gray-600 text-center mt-6"
-            >
+            <motion.p variants={{ hidden:{opacity:0}, visible:{opacity:1} }}
+              className="text-sm text-gray-600 text-center mt-6">
               Don’t have an account?{" "}
               <span
                 onClick={() => router.push("/signup")}

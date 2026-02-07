@@ -7,6 +7,7 @@ import { Suspense } from "react"
 import "./globals.css"
 
 import { AuthProvider } from "@/context/AuthContext"
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "NLP In Clinical Documentation",
@@ -22,10 +23,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
+        <Providers>
         <AuthProvider>
           <Suspense fallback={null}>{children}</Suspense>
           <Analytics />
         </AuthProvider>
+        </Providers>
       </body>
     </html>
   )

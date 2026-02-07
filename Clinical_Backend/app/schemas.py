@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-
+from typing import Optional
 
 class UserCreate(BaseModel):
     name: str
@@ -26,4 +26,9 @@ class ResetPasswordRequest(BaseModel):
     token: str
     new_password: str
     confirm_password: str
+    
+class GoogleLoginRequest(BaseModel):
+    email: EmailStr
+    name: str | None = None
+    image: str | None = None
 
