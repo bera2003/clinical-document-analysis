@@ -70,12 +70,9 @@ export default function SettingsPage() {
   };
 
   /* Logout everywhere */
-  const logoutAll = () => {
-    localStorage.clear();
-    logout();
-    router.push("/login");
-  };
-
+  const logoutAll = async () => {
+  await logout(); // logout already redirects
+};
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800 p-8">
       <div className="max-w-5xl mx-auto space-y-8">

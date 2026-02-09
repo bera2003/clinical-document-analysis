@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
+import { useSession, signOut } from "next-auth/react"
 
 interface User {
   id: number
@@ -15,65 +15,66 @@ interface AuthContextType {
   loading: boolean
   login: (email: string, password: string) => Promise<boolean>
   signup: (name: string, email: string, password: string) => Promise<boolean>
-  logout: () => void
+  logout: () => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
+
   const { data: session, status } = useSession()
 
   const [user, setUser] = useState<User | null>(null)
   const [token, setToken] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
 
-  // 🔥 Restore auth on refresh + handle Google login
+  /**
+   🔥 Restore auth + handle Google login
+  */
   useEffect(() => {
 
-  if (status === "loading") return;
+    if (status === "loading") return;
 
-  // ✅ GOOGLE LOGIN DETECTED
-  if (status === "authenticated" && session?.user) {
+    // ✅ GOOGLE LOGIN
+    if (status === "authenticated" && session?.user) {
 
-  const accessToken = (session as any)?.accessToken;
+      const accessToken = (session as any)?.accessToken;
 
-  // 🚨 VERY IMPORTANT
-  if (!accessToken) {
-    console.error("No backend token received from Google login");
+      if (!accessToken) {
+        console.error("No backend token received from Google login");
+        setLoading(false);
+        return;
+      }
+
+      const googleUser = {
+        id: (session.user as any)?.id || 0,
+        name: session.user.name || "",
+        email: session.user.email || ""
+      };
+
+      setToken(accessToken);
+      setUser(googleUser);
+
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("user", JSON.stringify(googleUser));
+
+      setLoading(false);
+      return;
+    }
+
+    // ✅ Restore normal login
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+
+    if (savedToken && savedUser) {
+      setToken(savedToken);
+      setUser(JSON.parse(savedUser));
+    }
+
     setLoading(false);
-    return;
-  }
 
-  setToken(accessToken);
+  }, [session, status]);
 
-  const googleUser = {
-    id: (session.user as any)?.id || 0,
-    name: session.user.name || "",
-    email: session.user.email || ""
-  };
-
-  setUser(googleUser);
-
-  localStorage.setItem("token", accessToken);
-  localStorage.setItem("user", JSON.stringify(googleUser));
-
-  setLoading(false);
-  return;
-}
-
-
-  // ✅ NORMAL LOGIN RESTORE
-  const savedToken = localStorage.getItem("token");
-  const savedUser = localStorage.getItem("user");
-
-  if (savedToken && savedUser) {
-    setToken(savedToken);
-    setUser(JSON.parse(savedUser));
-  }
-
-  setLoading(false);
-
-}, [session, status]);
 
 
   // ---------------- LOGIN ----------------
@@ -102,12 +103,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+
+
   // ---------------- SIGNUP ----------------
   const signup = async (
     name: string,
     email: string,
     password: string
   ): Promise<boolean> => {
+
     try {
       const res = await fetch("http://localhost:8000/signup", {
         method: "POST",
@@ -126,23 +130,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       localStorage.setItem("user", JSON.stringify(data.user))
 
       return true
+
     } catch (error) {
       console.error("Signup error:", error)
       return false
     }
   }
 
+
+
   // ---------------- LOGOUT ----------------
-  const logout = () => {
-    setToken(null)
-    setUser(null)
-
-    localStorage.removeItem("token")
-    localStorage.removeItem("user")
-
-    // Optional: also logout from Google session
-    window.location.href = "/api/auth/signout"
-  }
+  const logout = async () => {
+  await signOut({
+    callbackUrl: "/",   // go to landing
+    redirect: true,     // skip confirmation page
+  });
+};
 
   return (
     <AuthContext.Provider

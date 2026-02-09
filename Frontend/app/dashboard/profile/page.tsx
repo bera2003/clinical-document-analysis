@@ -11,7 +11,6 @@ import {
   Activity,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 
 interface DashboardStats {
   documentsProcessed: number;
@@ -20,18 +19,13 @@ interface DashboardStats {
 
 export default function ProfilePage() {
   const { user, token } = useAuth();
-  const router = useRouter();
 
   const [stats, setStats] = useState<DashboardStats | null>(null);
 
-  // 🔐 Protect route
-  if (!user) {
-    router.push("/login");
-    return null;
-  }
-
-  // 📊 Fetch real stats (documents + accuracy)
+  // ✅ Fetch stats ONLY when token exists
   useEffect(() => {
+    if (!token) return;
+
     fetch("http://localhost:8000/api/dashboard/stats", {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -40,7 +34,10 @@ export default function ProfilePage() {
       .then((res) => res.json())
       .then((data) => setStats(data))
       .catch(() => setStats(null));
-  }, [user]);
+  }, [token]);
+
+  // Layout already protects route
+  if (!user) return null;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-8">
@@ -56,9 +53,10 @@ export default function ProfilePage() {
           </p>
         </div>
 
-        {/* Main Profile Card */}
+        {/* Profile Card */}
         <Card className="shadow-xl border-0 mb-6 overflow-hidden">
           <div className="h-32 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600"></div>
+
           <CardContent className="p-8 -mt-16">
             <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
 
@@ -72,13 +70,14 @@ export default function ProfilePage() {
                 <h2 className="text-3xl font-bold text-slate-800 mb-2">
                   {user.name}
                 </h2>
+
                 <p className="text-slate-600 flex items-center justify-center md:justify-start gap-2">
                   <ShieldCheck className="w-4 h-4 text-purple-600" />
                   Healthcare NLP Analyst
                 </p>
               </div>
 
-              {/* Stats (UPDATED) */}
+              {/* Stats */}
               <div className="flex gap-4 md:mt-8">
                 <div className="text-center px-4 py-2 bg-blue-50 rounded-lg">
                   <div className="text-2xl font-bold text-blue-600">
@@ -98,6 +97,7 @@ export default function ProfilePage() {
                   </div>
                 </div>
               </div>
+
             </div>
           </CardContent>
         </Card>
@@ -105,15 +105,17 @@ export default function ProfilePage() {
         {/* Info Grid */}
         <div className="grid md:grid-cols-2 gap-6">
 
-          {/* Contact Information */}
+          {/* Contact Info */}
           <Card className="shadow-lg border-0">
             <CardContent className="p-6">
+
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Mail className="text-blue-600" />
                 Contact Information
               </h3>
 
               <div className="space-y-4">
+
                 <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                   <Mail className="text-green-600 w-5 h-5" />
                   <div>
@@ -133,6 +135,7 @@ export default function ProfilePage() {
                     </p>
                   </div>
                 </div>
+
               </div>
             </CardContent>
           </Card>
@@ -140,12 +143,14 @@ export default function ProfilePage() {
           {/* Account Details */}
           <Card className="shadow-lg border-0">
             <CardContent className="p-6">
+
               <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
                 <Activity className="text-indigo-600" />
                 Account Details
               </h3>
 
               <div className="space-y-4">
+
                 <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-lg">
                   <Calendar className="text-purple-600 w-5 h-5" />
                   <div>
@@ -165,6 +170,7 @@ export default function ProfilePage() {
                     </span>
                   </div>
                 </div>
+
               </div>
             </CardContent>
           </Card>
@@ -173,6 +179,7 @@ export default function ProfilePage() {
         {/* Expertise */}
         <Card className="shadow-lg border-0 mt-6">
           <CardContent className="p-6">
+
             <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <ShieldCheck className="text-indigo-600" />
               Expertise
@@ -194,6 +201,7 @@ export default function ProfilePage() {
                 </span>
               ))}
             </div>
+
           </CardContent>
         </Card>
 

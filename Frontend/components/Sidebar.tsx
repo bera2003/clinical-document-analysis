@@ -66,11 +66,8 @@ export default function Sidebar() {
       </nav>
 
       {/* Logout */}
-      <button
-  onClick={() => {
-    logout();
-    window.location.href = "/login";
-  }}
+<button
+  onClick={logout}
   className={`absolute bottom-6 left-0 mx-4
   flex items-center gap-3 px-4 py-2 text-red-400
   hover:bg-slate-800 rounded-lg transition
@@ -79,7 +76,6 @@ export default function Sidebar() {
   <LogOut className="h-5 w-5" />
   {!collapsed && "Logout"}
 </button>
-
-    </aside>
+  </aside>
   );
 }

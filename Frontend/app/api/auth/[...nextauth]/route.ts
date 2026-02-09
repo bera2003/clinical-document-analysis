@@ -14,11 +14,37 @@ const handler = NextAuth({
     strategy: "jwt",
   },
 
+  secret: process.env.NEXTAUTH_SECRET,
+
   callbacks: {
 
+    /**
+     ✅ CRITICAL FIX
+     Controls ALL redirects (login, logout, OAuth)
+     Prevents NextAuth from sending users to /login
+    */
+    async redirect({ url, baseUrl }) {
+
+      // Allow relative URLs
+      if (url.startsWith("/")) {
+        return `${baseUrl}${url}`;
+      }
+
+      // Allow same-origin URLs
+      if (new URL(url).origin === baseUrl) {
+        return url;
+      }
+
+      // Default → ALWAYS landing page
+      return baseUrl;
+    },
+
+    /**
+     ✅ Attach FastAPI JWT to NextAuth token
+    */
     async jwt({ token, user, account }) {
 
-      // Runs ONLY when user signs in with Google
+      // Runs ONLY on Google sign-in
       if (account && user) {
 
         const res = await fetch("http://127.0.0.1:8000/auth/google-login", {
@@ -32,29 +58,27 @@ const handler = NextAuth({
 
         const data = await res.json();
 
-        // ✅ SAVE REAL JWT FROM FASTAPI
+        // Save backend JWT
         token.accessToken = data.access_token;
 
-        // ✅ SAVE USER
+        // Save backend user
         token.user = data.user;
       }
 
       return token;
     },
 
+    /**
+     ✅ Expose JWT + user to frontend session
+    */
     async session({ session, token }) {
 
-      // ✅ PUSH TOKEN INTO SESSION
       (session as any).accessToken = token.accessToken;
-
-      // ✅ PUSH USER INTO SESSION
       session.user = token.user as any;
 
       return session;
     },
   },
-
-  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST };

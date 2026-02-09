@@ -63,15 +63,6 @@ const colorMap: Record<string, string> = {
 
 export default function HealthcareNLPDashboard() {
   const { user, token, loading } = useAuth();
-  const router = useRouter();
-
-  useEffect(() => {
-
-  if (loading) return; // ⭐ WAIT FOR AUTH
-
-  if (!user) router.push("/login");
-
-}, [user, loading]);
 
   const [stats, setStats] = useState<ProcessingStats | null>(null);
   const [processingLogs, setProcessingLogs] = useState<ProcessingLog[]>([]);
@@ -81,16 +72,6 @@ export default function HealthcareNLPDashboard() {
   const [quickText, setQuickText] = useState("");
 
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-
-    if (loading) return;
-
-    if (!user) {
-      router.push("/login");
-    }
-
-  }, [user, loading, router]);
 
   /* ---------- API ---------- */
 
