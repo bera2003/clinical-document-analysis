@@ -208,13 +208,30 @@ export default function LandingPage() {
 
     {/* LEGAL */}
     <div>
-      <h4 className="font-semibold mb-4">Legal</h4>
-      <ul className="space-y-2 text-gray-400">
-        <li>Privacy Policy</li>
-        <li>Terms of Service</li>
-        <li>HIPAA Compliance</li>
-      </ul>
-    </div>
+  <h4 className="font-semibold mb-4">Legal</h4>
+
+  <ul className="space-y-2 text-gray-400">
+
+    <li>
+      <Link href="/privacy" className="hover:text-white transition duration-200">
+        Privacy Policy
+      </Link>
+    </li>
+
+    <li>
+      <Link href="/terms" className="hover:text-white transition duration-200">
+        Terms of Service
+      </Link>
+    </li>
+
+    <li>
+      <Link href="/hipaa" className="hover:text-white transition duration-200">
+        HIPAA Compliance
+      </Link>
+    </li>
+
+  </ul>
+</div>
 
   </div>
 
