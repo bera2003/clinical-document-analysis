@@ -129,9 +129,59 @@ export default function LandingPage() {
 
 
       {/* FOOTER */}
-      <footer className="relative z-10 text-center pb-10 text-gray-400 border-t border-white/10 pt-6">
-        © {new Date().getFullYear()} Clinical NLP — AI for Modern Healthcare
-      </footer>
+      <footer className="relative z-10 border-t border-white/10 mt-20">
+  <div className="max-w-7xl mx-auto px-8 py-16 grid md:grid-cols-4 gap-10">
+
+    {/* BRAND */}
+    <div>
+      <div className="flex items-center gap-2 text-lg font-semibold">
+        <Stethoscope className="text-blue-400" />
+        Clinical NLP
+      </div>
+
+      <p className="text-gray-400 mt-4">
+        Transforming healthcare data into actionable intelligence using
+        advanced artificial intelligence.
+      </p>
+    </div>
+
+    {/* PRODUCT */}
+    <div>
+      <h4 className="font-semibold mb-4">Product</h4>
+      <ul className="space-y-2 text-gray-400">
+        <li>Features</li>
+        <li>Security</li>
+        <li>API</li>
+        <li>Integrations</li>
+      </ul>
+    </div>
+
+    {/* COMPANY */}
+    <div>
+      <h4 className="font-semibold mb-4">Company</h4>
+      <ul className="space-y-2 text-gray-400">
+        <li>About</li>
+        <li>Contact</li>
+        <li>Blog</li>
+      </ul>
+    </div>
+
+    {/* LEGAL */}
+    <div>
+      <h4 className="font-semibold mb-4">Legal</h4>
+      <ul className="space-y-2 text-gray-400">
+        <li>Privacy Policy</li>
+        <li>Terms of Service</li>
+        <li>HIPAA Compliance</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div className="text-center text-gray-500 pb-8">
+    © {new Date().getFullYear()} Clinical NLP — AI for Modern Healthcare
+  </div>
+</footer>
 
     </div>
   )
