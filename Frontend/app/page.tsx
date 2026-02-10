@@ -181,13 +181,30 @@ export default function LandingPage() {
 
     {/* COMPANY */}
     <div>
-      <h4 className="font-semibold mb-4">Company</h4>
-      <ul className="space-y-2 text-gray-400">
-        <li>About</li>
-        <li>Contact</li>
-        <li>Blog</li>
-      </ul>
-    </div>
+  <h4 className="font-semibold mb-4">Company</h4>
+
+  <ul className="space-y-2 text-gray-400">
+
+    <li>
+      <Link href="/about" className="hover:text-white transition">
+        About
+      </Link>
+    </li>
+
+    <li>
+      <Link href="/contact" className="hover:text-white transition">
+        Contact
+      </Link>
+    </li>
+
+    <li>
+      <Link href="/blog" className="hover:text-white transition">
+        Blog
+      </Link>
+    </li>
+
+  </ul>
+</div>
 
     {/* LEGAL */}
     <div>
