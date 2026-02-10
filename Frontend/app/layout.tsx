@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import { Analytics } from "@vercel/analytics/next"
 import { Suspense } from "react"
 import "./globals.css"
+import Navbar from "@/components/Navbar";
 
 import { AuthProvider } from "@/context/AuthContext"
 import Providers from "./providers";
@@ -23,12 +24,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
+
         <Providers>
-        <AuthProvider>
-          <Suspense fallback={null}>{children}</Suspense>
-          <Analytics />
-        </AuthProvider>
+          <AuthProvider>
+
+            {/* ✅ GLOBAL NAVBAR */}
+            <Navbar />
+
+            <Suspense fallback={null}>
+              {children}
+            </Suspense>
+
+            <Analytics />
+
+          </AuthProvider>
         </Providers>
+
       </body>
     </html>
   )

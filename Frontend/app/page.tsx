@@ -17,31 +17,6 @@ export default function LandingPage() {
 
       <div className="absolute inset-0 backdrop-blur-3xl" />
 
-      {/* NAVBAR */}
-      <nav className="relative z-20 flex justify-between items-center px-8 py-6">
-
-        <div className="flex items-center gap-2 text-lg font-semibold">
-          <Stethoscope className="text-blue-400" />
-          Clinical NLP
-        </div>
-
-        <div className="flex gap-4">
-          <button
-            onClick={() => router.push("/login")}
-            className="px-5 py-2 rounded-lg hover:bg-white/10 transition"
-          >
-            Login
-          </button>
-
-          <button
-            onClick={() => router.push("/signup")}
-            className="px-5 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition"
-          >
-            Get Started
-          </button>
-        </div>
-
-      </nav>
 
 
       {/* HERO */}
