@@ -165,7 +165,7 @@ export default function LandingPage() {
     </li>
 
     <li>
-      <Link href="/api" className="hover:text-white transition">
+      <Link href="/docs" className="hover:text-white transition">
         API
       </Link>
     </li>
