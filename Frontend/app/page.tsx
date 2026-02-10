@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { Stethoscope } from "lucide-react"
+import Link from "next/link"
 
 export default function LandingPage() {
 
@@ -146,15 +147,37 @@ export default function LandingPage() {
     </div>
 
     {/* PRODUCT */}
-    <div>
-      <h4 className="font-semibold mb-4">Product</h4>
-      <ul className="space-y-2 text-gray-400">
-        <li>Features</li>
-        <li>Security</li>
-        <li>API</li>
-        <li>Integrations</li>
-      </ul>
-    </div>
+
+<div>
+  <h4 className="font-semibold mb-4">Product</h4>
+  <ul className="space-y-2 text-gray-400">
+
+    <li>
+      <Link href="/features" className="hover:text-white transition">
+        Features
+      </Link>
+    </li>
+
+    <li>
+      <Link href="/security" className="hover:text-white transition">
+        Security
+      </Link>
+    </li>
+
+    <li>
+      <Link href="/api" className="hover:text-white transition">
+        API
+      </Link>
+    </li>
+
+    <li>
+      <Link href="/integrations" className="hover:text-white transition">
+        Integrations
+      </Link>
+    </li>
+
+  </ul>
+</div>
 
     {/* COMPANY */}
     <div>
