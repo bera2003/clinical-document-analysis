@@ -99,41 +99,46 @@ export default function HealthcareNLPDashboard() {
   /* ---------- UPLOAD HANDLER ---------- */
 
   const handleUploadDocuments = async () => {
-    if (!uploadedFile) {
-      fileInputRef.current?.click();
-      return;
-    }
+  if (!uploadedFile) {
+    fileInputRef.current?.click();
+    return;
+  }
 
-    setIsProcessing(true);
-    setProgress(0);
+  setIsProcessing(true);
+  setProgress(0);
 
-    const formData = new FormData();
-    formData.append("file", uploadedFile);
+  const formData = new FormData();
+  formData.append("file", uploadedFile);
 
-    const res = await fetch("http://localhost:8000/upload", {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/upload`,
+    {
       method: "POST",
-      headers: { Authorization: `Bearer ${token}` },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
       body: formData,
-    });
-
-    if (res.ok) {
-      const interval = setInterval(() => {
-        setProgress((p) => {
-          if (p >= 100) {
-            clearInterval(interval);
-            setIsProcessing(false);
-            setUploadedFile(null);
-            fetchDashboardStats();
-            fetchProcessingLogs();
-            return 100;
-          }
-          return p + 20;
-        });
-      }, 400);
-    } else {
-      setIsProcessing(false);
     }
-  };
+  );
+
+  if (res.ok) {
+    const interval = setInterval(() => {
+      setProgress((p) => {
+        if (p >= 100) {
+          clearInterval(interval);
+          setIsProcessing(false);
+          setUploadedFile(null);
+          fetchDashboardStats();
+          fetchProcessingLogs();
+          return 100;
+        }
+        return p + 20;
+      });
+    }, 400);
+  } else {
+    setIsProcessing(false);
+  }
+};
 
   return (
     <main className="px-6 py-8 space-y-8 bg-slate-50 min-h-screen">
