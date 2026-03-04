@@ -10,6 +10,7 @@ from app.schemas import ForgotPasswordRequest, ResetPasswordRequest
 from passlib.context import CryptContext
 from app.schemas import GoogleLoginRequest
 from app.jwt_config import create_access_token
+from fastapi.security import OAuth2PasswordRequestForm
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -131,3 +132,25 @@ def google_login(
     }
 
 
+@router.post("/login")
+def login(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    db: Session = Depends(get_db)
+):
+    user = db.query(User).filter(User.email == form_data.username).first()
+
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+
+    if not verify_password(form_data.password, user.password):
+        raise HTTPException(status_code=400, detail="Invalid credentials")
+
+    token = create_access_token({
+        "sub": user.email,
+        "user_id": user.id
+    })
+
+    return {
+        "access_token": token,
+        "token_type": "bearer"
+    }

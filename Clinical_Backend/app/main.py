@@ -230,3 +230,14 @@ def extract_entities_from_text(
     return {
         "entities": entities
     }
+    
+@app.get("/api/documents")
+def get_documents(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    documents = db.query(ClinicalDocument).filter(
+        ClinicalDocument.user_id == current_user.id
+    ).all()
+
+    return documents

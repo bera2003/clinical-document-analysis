@@ -7,7 +7,7 @@ from app.database import SessionLocal
 from app.jwt_config import SECRET_KEY, ALGORITHM
 from app.models import User
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def get_db():

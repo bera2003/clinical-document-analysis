@@ -35,6 +35,8 @@ class ClinicalDocument(Base):
     extracted_text = Column(Text)
     entities = Column(Text)
     created_at = Column(DateTime, default=datetime.utcnow)
+    
+    status = Column(String, default="Pending")
 
     # 🔗 Document belongs to one user
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)

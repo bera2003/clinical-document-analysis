@@ -78,30 +78,42 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 
   // ---------------- LOGIN ----------------
-  const login = async (email: string, password: string): Promise<boolean> => {
-    try {
-      const res = await fetch("http://localhost:8000/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      })
+  const login = async (email: string, password: string) => {
+  try {
+    const res = await fetch("http://127.0.0.1:8000/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: new URLSearchParams({
+        username: email,
+        password: password,
+      }),
+    });
 
-      if (!res.ok) return false
+    if (!res.ok) return false;
 
-      const data = await res.json()
+    const data = await res.json();
 
-      setToken(data.access_token)
-      setUser(data.user)
+    const userData = {
+      id: data.user_id,
+      email: email,
+      name: "",
+    };
 
-      localStorage.setItem("token", data.access_token)
-      localStorage.setItem("user", JSON.stringify(data.user))
+    // ✅ store same keys used in restore
+    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("user", JSON.stringify(userData));
 
-      return true
-    } catch (error) {
-      console.error("Login error:", error)
-      return false
-    }
+    setToken(data.access_token);
+    setUser(userData);
+
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
   }
+};
 
 
 
