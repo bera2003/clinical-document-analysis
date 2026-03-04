@@ -47,7 +47,7 @@ const handler = NextAuth({
       // Runs ONLY on Google sign-in
       if (account && user) {
 
-        const res = await fetch("http://127.0.0.1:8000/auth/google-login", {
+        const res = await fetch("https://clinical-document-analysis.onrender.com/auth/google-login", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

@@ -48,7 +48,7 @@ def forgot_password(
 
     db.commit()
 
-    reset_link = f"http://localhost:3000/reset-password/{token}"
+    reset_link = f"https://clinical-document-analysis.vercel.app/reset-password/{token}"
 
     send_reset_email(user.email, reset_link)
 

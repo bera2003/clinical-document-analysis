@@ -83,14 +83,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const API = process.env.NEXT_PUBLIC_API_URL;
 
-    const res = await fetch(`${API}/login`, {
+    const res = await fetch(`${API}/auth/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
-      body: JSON.stringify({
-        email,
-        password,
+      body: new URLSearchParams({
+        username: email,
+        password: password,
       }),
     });
 
@@ -98,7 +98,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const data = await res.json();
 
-    const userData = data.user;
+    const userData = {
+      id: data.user?.id || 0,
+      email: email,
+      name: data.user?.name || "",
+    };
 
     localStorage.setItem("token", data.access_token);
     localStorage.setItem("user", JSON.stringify(userData));
