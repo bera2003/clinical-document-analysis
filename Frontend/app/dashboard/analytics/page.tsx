@@ -32,7 +32,7 @@ export default function AnalyticsPage() {
     if (!user) return;
 
     // 🔹 Fetch entity distribution
-    fetch("http://localhost:8000/api/entities", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/entities`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -59,7 +59,7 @@ export default function AnalyticsPage() {
       });
 
     // 🔹 Fetch stats
-    fetch("http://localhost:8000/api/dashboard/stats", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/stats`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

@@ -24,7 +24,7 @@ export default function EntitiesPage() {
   useEffect(() => {
     if (!user) return;
 
-    fetch("http://localhost:8000/api/entities", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/entities`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

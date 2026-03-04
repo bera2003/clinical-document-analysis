@@ -26,7 +26,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (!token) return;
 
-    fetch("http://localhost:8000/api/dashboard/stats", {
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/stats`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

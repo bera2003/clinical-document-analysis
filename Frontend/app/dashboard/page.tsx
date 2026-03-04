@@ -76,14 +76,14 @@ export default function HealthcareNLPDashboard() {
   /* ---------- API ---------- */
 
   const fetchDashboardStats = async () => {
-    const res = await fetch("http://localhost:8000/api/dashboard/stats", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/stats`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     setStats(await res.json());
   };
 
   const fetchProcessingLogs = async () => {
-    const res = await fetch("http://localhost:8000/api/dashboard/logs", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/dashboard/logs`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = await res.json();
