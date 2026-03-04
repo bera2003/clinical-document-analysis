@@ -11,6 +11,7 @@ from app.schemas import UserCreate, UserLogin
 from app.auth import hash_password, verify_password, router as auth_router
 from app.jwt_config import create_access_token
 from app.dependencies import get_current_user
+from sqlalchemy.exc import SQLAlchemyError
 
 # ------------------------
 # App Initialization
@@ -28,7 +29,11 @@ app.add_middleware(
 )
 
 # Create DB tables
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+    print("Database connected successfully")
+except SQLAlchemyError as e:
+    print("Database connection failed:", e)
 
 # ------------------------
 # Database Dependency
