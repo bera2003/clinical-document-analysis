@@ -94,14 +94,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       }),
     });
 
-    if (!res.ok) return false;
+    if (!res.ok) {
+      const error = await res.json();
+      console.error("Login error:", error);
+      return false;
+    }
 
     const data = await res.json();
 
     const userData = {
-      id: data.user?.id || 0,
+      id: data.user_id || 0,
       email: email,
-      name: data.user?.name || "",
+      name: "",
     };
 
     localStorage.setItem("token", data.access_token);
