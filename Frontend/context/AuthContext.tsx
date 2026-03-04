@@ -102,7 +102,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const data = await res.json();
 
-    const userData = data.user;
+    const userData = {
+      id: data.user_id || 0,
+      email: email,
+      name: "",
+    };
 
     localStorage.setItem("token", data.access_token);
     localStorage.setItem("user", JSON.stringify(userData));
