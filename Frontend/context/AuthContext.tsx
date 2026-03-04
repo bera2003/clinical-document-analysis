@@ -80,14 +80,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   // ---------------- LOGIN ----------------
   const login = async (email: string, password: string) => {
   try {
-    const res = await fetch("http://127.0.0.1:8000/auth/login", {
+
+    const API = process.env.NEXT_PUBLIC_API_URL;
+
+    const res = await fetch(`${API}/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({
-        username: email,
-        password: password,
+      body: JSON.stringify({
+        email,
+        password,
       }),
     });
 
@@ -95,13 +98,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const data = await res.json();
 
-    const userData = {
-      id: data.user_id,
-      email: email,
-      name: "",
-    };
+    const userData = data.user;
 
-    // ✅ store same keys used in restore
     localStorage.setItem("token", data.access_token);
     localStorage.setItem("user", JSON.stringify(userData));
 
@@ -109,8 +107,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(userData);
 
     return true;
+
   } catch (err) {
-    console.error(err);
+    console.error("Login error:", err);
     return false;
   }
 };
@@ -119,35 +118,40 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // ---------------- SIGNUP ----------------
   const signup = async (
-    name: string,
-    email: string,
-    password: string
-  ): Promise<boolean> => {
+  name: string,
+  email: string,
+  password: string
+): Promise<boolean> => {
 
-    try {
-      const res = await fetch("http://localhost:8000/signup", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
-      })
+  try {
 
-      if (!res.ok) return false
+    const API = process.env.NEXT_PUBLIC_API_URL;
 
-      const data = await res.json()
+    const res = await fetch(`${API}/signup`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ name, email, password }),
+    });
 
-      setToken(data.access_token)
-      setUser(data.user)
+    if (!res.ok) return false;
 
-      localStorage.setItem("token", data.access_token)
-      localStorage.setItem("user", JSON.stringify(data.user))
+    const data = await res.json();
 
-      return true
+    setToken(data.access_token);
+    setUser(data.user);
 
-    } catch (error) {
-      console.error("Signup error:", error)
-      return false
-    }
+    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("user", JSON.stringify(data.user));
+
+    return true;
+
+  } catch (error) {
+    console.error("Signup error:", error);
+    return false;
   }
+};
 
 
 
