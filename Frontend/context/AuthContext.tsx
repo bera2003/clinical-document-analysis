@@ -78,35 +78,24 @@ if (savedToken && savedUser && savedUser !== "undefined") {
 
 
   // ---------------- LOGIN ----------------
-  const login = async (email: string, password: string) => {
+const login = async (email: string, password: string) => {
   try {
 
     const API = process.env.NEXT_PUBLIC_API_URL;
 
-    const res = await fetch(`${API}/auth/login`, {
+    const res = await fetch(`${API}/login`, {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({
-        username: email,
-        password: password,
-      }),
+      body: JSON.stringify({ email, password }),
     });
 
-    if (!res.ok) {
-      const error = await res.json();
-      console.error("Login error:", error);
-      return false;
-    }
+    if (!res.ok) return false;
 
     const data = await res.json();
 
-    const userData = {
-      id: data.user_id || 0,
-      email: email,
-      name: "",
-    };
+    const userData = data.user;
 
     localStorage.setItem("token", data.access_token);
     localStorage.setItem("user", JSON.stringify(userData));
@@ -121,7 +110,6 @@ if (savedToken && savedUser && savedUser !== "undefined") {
     return false;
   }
 };
-
 
 
   // ---------------- SIGNUP ----------------
