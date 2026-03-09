@@ -2,7 +2,7 @@ import spacy
 
 nlp = spacy.load("en_core_web_sm")
 
-def extract_clinical_entities(text):
+def analyze_text(text):
 
     doc = nlp(text)
 
@@ -29,7 +29,6 @@ def extract_clinical_entities(text):
         elif ent.label_ == "CARDINAL":
             result["numbers"].append(ent.text)
 
-    # Detect symptoms using dependency tokens
     symptom_words = [
         "pain", "fever", "cough", "vomiting",
         "shortness of breath", "headache"
