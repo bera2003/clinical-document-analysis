@@ -6,7 +6,7 @@ from datetime import datetime
 from app.database import engine, SessionLocal
 from app.models import Base, ClinicalDocument, User
 from app.file_reader import read_file
-from app.nlp import analyze_text
+from app.nlp import extract_clinical_entities
 from app.schemas import UserCreate, UserLogin
 from app.auth import hash_password, verify_password, router as auth_router
 from app.jwt_config import create_access_token
