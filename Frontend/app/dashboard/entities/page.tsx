@@ -12,14 +12,25 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+type Entity = {
+  text: string;
+  label: string;
+};
+
+type EntityDoc = {
+  document_id: number | string;
+  filename: string;
+  entities: string | Entity[] | null;
+};
+
 export default function EntitiesPage() {
   const { user, token } = useAuth();
   const router = useRouter();
-  const [entitiesData, setEntitiesData] = useState<any[]>([]);
+  const [entitiesData, setEntitiesData] = useState<EntityDoc[]>([]);
 
   useEffect(() => {
     if (!user) router.push("/login");
-  }, [user]);
+  }, [user, router]);
 
   useEffect(() => {
     if (!user) return;
@@ -31,6 +42,8 @@ export default function EntitiesPage() {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log("Entities API response:", data);
+
         if (Array.isArray(data)) {
           setEntitiesData(data);
         } else if (Array.isArray(data.entities)) {
@@ -39,8 +52,32 @@ export default function EntitiesPage() {
           setEntitiesData([]);
         }
       })
-      .catch(() => setEntitiesData([]));
-  }, [user]);
+      .catch((err) => {
+        console.error("Failed to fetch entities:", err);
+        setEntitiesData([]);
+      });
+  }, [user, token]);
+
+  const parseEntities = (raw: string | Entity[] | null | undefined): Entity[] => {
+    if (!raw) return [];
+
+    if (Array.isArray(raw)) {
+      return raw;
+    }
+
+    if (typeof raw === "string") {
+      try {
+        const fixed = raw.replace(/'/g, '"').replace(/None/g, "null");
+        const parsed = JSON.parse(fixed);
+        return Array.isArray(parsed) ? parsed : [];
+      } catch (err) {
+        console.error("Entity parse failed:", err, raw);
+        return [];
+      }
+    }
+
+    return [];
+  };
 
   return (
     <main className="p-6 space-y-6">
@@ -53,48 +90,37 @@ export default function EntitiesPage() {
         <p className="text-gray-500">No entities found.</p>
       )}
 
-      {Array.isArray(entitiesData) &&
-        entitiesData.map((doc) => {
-          let parsedEntities: any[] = [];
+      {entitiesData.map((doc, index) => {
+        const parsedEntities = parseEntities(doc.entities);
 
-          try {
-            const fixed = doc.entities
-              ?.replace(/'/g, '"')
-              ?.replace(/None/g, "null");
+        return (
+          <Card key={doc.document_id ?? index}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-sm">
+                <FileText className="h-4 w-4" />
+                {doc.filename}
+              </CardTitle>
+            </CardHeader>
 
-            parsedEntities = fixed ? JSON.parse(fixed) : [];
-          } catch (err) {
-            console.error("Entity parse failed", err);
-          }
-
-          return (
-            <Card key={doc.document_id}>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-sm">
-                  <FileText className="h-4 w-4" />
-                  {doc.filename}
-                </CardTitle>
-              </CardHeader>
-
-              <CardContent className="flex flex-wrap gap-2">
-                {parsedEntities.length === 0 && (
-                  <span className="text-sm text-gray-400">
-                    No entities extracted
-                  </span>
-                )}
-
-                {parsedEntities.map((entity, idx) => (
+            <CardContent className="flex flex-wrap gap-2">
+              {parsedEntities.length === 0 ? (
+                <span className="text-sm text-gray-400">
+                  No entities extracted
+                </span>
+              ) : (
+                parsedEntities.map((entity, idx) => (
                   <span
                     key={idx}
                     className="px-3 py-1 text-xs rounded-full bg-green-100 text-green-700 border"
                   >
                     {entity.text} ({entity.label})
                   </span>
-                ))}
-              </CardContent>
-            </Card>
-          );
-        })}
+                ))
+              )}
+            </CardContent>
+          </Card>
+        );
+      })}
     </main>
   );
 }
